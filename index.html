@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bureau National des Suspects — Formulaire d'Enquête</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --kraft: #d8c9a8;
+    --kraft-dark: #c6b28c;
+    --paper: #f2ead9;
+    --ink: #2b2620;
+    --stamp-red: #a3272c;
+    --stamp-red-dark: #7c1e22;
+    --folder-shadow: rgba(30,22,10,0.35);
+    --pin-gray: #7a7568;
+    --tape: rgba(230,220,190,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, #3a3226, transparent 60%),
+      radial-gradient(ellipse at bottom right, #2a251d, transparent 60%),
+      #221e18;
+    min-height:100vh;
+    font-family:'Courier Prime', monospace;
+    color:var(--ink);
+    padding:40px 16px 80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode:overlay;
+  }
+
+  .masthead{
+    text-align:center;
+    color:var(--paper);
+    margin-bottom:28px;
+    max-width:680px;
+  }
+  .masthead .eyebrow{
+    font-family:'Oswald', sans-serif;
+    letter-spacing:0.35em;
+    font-size:11px;
+    color:#c9a86a;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .masthead h1{
+    font-family:'Special Elite', monospace;
+    font-size:clamp(28px, 5vw, 46px);
+    margin:0 0 10px;
+    letter-spacing:0.02em;
+    text-shadow:0 2px 0 rgba(0,0,0,0.4);
+  }
+  .masthead p{
+    font-size:13px;
+    color:#b9ac8f;
+    line-height:1.6;
+    margin:0;
+  }
+
+  .folder{
+    position:relative;
+    width:100%;
+    max-width:640px;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(0,0,0,0.03) 0, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(0,0,0,0.04) 0, transparent 45%);
+    border-radius:2px;
+    box-shadow:
+      0 30px 60px -20px var(--folder-shadow),
+      0 2px 0 rgba(255,255,255,0.4) inset;
+    padding:0;
+    border:1px solid #b8a578;
+  }
+
+  .folder-tab{
+    position:absolute;
+    top:-26px;
+    left:28px;
+    background:var(--kraft-dark);
+    color:var(--ink);
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:0.12em;
+    padding:8px 18px 10px;
+    border-radius:6px 6px 0 0;
+    box-shadow:0 -2px 6px rgba(0,0,0,0.15) inset, 0 -3px 6px rgba(0,0,0,0.2);
+  }
+
+  .pin{
+    position:absolute;
+    top:14px;
+    right:22px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #d4342c, #7c1e22 70%);
+    box-shadow:0 2px 4px rgba(0,0,0,0.4);
+  }
+
+  .folder-inner{
+    padding:38px 34px 34px;
+  }
+
+  .case-number{
+    font-family:'Special Elite', monospace;
+    font-size:12px;
+    color:#7a6d4f;
+    letter-spacing:0.05em;
+    margin-bottom:6px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .form-title{
+    font-family:'Special Elite', monospace;
+    font-size:20px;
+    text-align:center;
+    margin:6px 0 4px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .form-sub{
+    text-align:center;
+    font-size:11.5px;
+    color:#6b6250;
+    margin-bottom:22px;
+    font-style:italic;
+  }
+
+  hr.dashed{
+    border:none;
+    border-top:1.5px dashed #a3946c;
+    margin:18px 0;
+  }
+
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-family:'Oswald', sans-serif;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:#5c5340;
+    margin-bottom:5px;
+  }
+  .field .hint{
+    font-size:10px;
+    color:#948a6d;
+    font-style:italic;
+    margin-left:6px;
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .field input, .field select{
+    width:100%;
+    background:transparent;
+    border:none;
+    border-bottom:1.5px solid #7a6d4f;
+    font-family:'Courier Prime', monospace;
+    font-size:15px;
+    padding:6px 2px;
+    color:var(--ink);
+    outline:none;
+  }
+  .field input:focus, .field select:focus{
+    border-bottom:1.5px solid var(--stamp-red);
+    background:rgba(163,39,44,0.04);
+  }
+  .field input::placeholder{color:#a89c7d;}
+
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px 20px;
+  }
+  @media (max-width:480px){
+    .row2{grid-template-columns:1fr;}
+  }
+
+  .submit-btn{
+    width:100%;
+    margin-top:10px;
+    background:var(--stamp-red);
+    color:var(--paper);
+    border:none;
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:15px 20px;
+    border-radius:2px;
+    cursor:pointer;
+    box-shadow:0 6px 14px -4px rgba(163,39,44,0.5);
+    transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  }
+  .submit-btn:hover{
+    background:var(--stamp-red-dark);
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px -4px rgba(163,39,44,0.6);
+  }
+  .submit-btn:active{
+    transform:translateY(1px) scale(0.99);
+  }
+
+  .footer-note{
+    text-align:center;
+    font-size:10px;
+    color:#8f836a;
+    margin-top:14px;
+    font-style:italic;
+  }
+
+  /* ===== VERDICT ===== */
+  .verdict-wrap{
+    display:none;
+    width:100%;
+    max-width:640px;
+    margin-top:26px;
+  }
+  .verdict-wrap.show{
+    display:block;
+    animation:paperDrop 0.5s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes paperDrop{
+    from{opacity:0; transform:translateY(-14px) rotate(-1deg);}
+    to{opacity:1; transform:translateY(0) rotate(0);}
+  }
+
+  .verdict{
+    position:relative;
+    background:var(--paper);
+    border:1px solid #b8a578;
+    padding:34px 30px 30px;
+    box-shadow:0 30px 60px -20px var(--folder-shadow);
+    overflow:hidden;
+  }
+
+  .verdict .case-number{margin-bottom:14px;}
+
+  .stamp{
+    position:absolute;
+    top:28px;
+    right:24px;
+    border:4px solid var(--stamp-red);
+    color:var(--stamp-red);
+    font-family:'Special Elite', monospace;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:6px 12px;
+    font-size:13px;
+    letter-spacing:0.08em;
+    transform:rotate(9deg);
+    border-radius:6px;
+    opacity:0.9;
+    mix-blend-mode:multiply;
+    animation:stampHit 0.35s ease-out 0.15s both;
+  }
+  @keyframes stampHit{
+    0%{opacity:0; transform:rotate(9deg) scale(2.2);}
+    60%{opacity:0.95; transform:rotate(9deg) scale(0.92);}
+    100%{opacity:0.9; transform:rotate(9deg) scale(1);}
+  }
+
+  .verdict-title{
+    font-family:'Oswald', sans-serif;
+    font-size:11px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:#8a7d5e;
+    margin-bottom:6px;
+  }
+
+  .suspect-name{
+    font-family:'Special Elite', monospace;
+    font-size:22px;
+    margin:0 0 18px;
+  }
+
+  .meter-row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:6px;
+  }
+  .meter-pct{
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size:44px;
+    color:var(--stamp-red);
+    line-height:1;
+  }
+  .meter-label{
+    font-family:'Oswald', sans-serif;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:#6b6250;
+  }
+  .meter-bar-track{
+    width:100%;
+    height:14px;
+    background:#e3d8bd;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid #b8a578;
+    margin:10px 0 22px;
+  }
+  .meter-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, #c9a23a, var(--stamp-red));
+    border-radius:8px 0 0 8px;
+    transition:width 1s cubic-bezier(.2,.9,.2,1);
+  }
+
+  .accusation-box{
+    background:rgba(163,39,44,0.06);
+    border-left:4px solid var(--stamp-red);
+    padding:14px 16px;
+    margin-bottom:18px;
+  }
+  .accusation-box .label{
+    font-family:'Oswald', sans-serif;
+    font-size:10.5px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--stamp-red-dark);
+    margin-bottom:5px;
+  }
+  .accusation-box .text{
+    font-size:16px;
+    line-height:1.4;
+  }
+
+  .dossier-report{
+    font-size:13.5px;
+    line-height:1.75;
+    color:#3a332a;
+    margin-bottom:18px;
+  }
+  .dossier-report b{color:var(--ink);}
+
+  .evidence-list{
+    list-style:none;
+    padding:0;
+    margin:0 0 20px;
+  }
+  .evidence-list li{
+    font-size:12.5px;
+    padding:6px 0 6px 22px;
+    border-bottom:1px dotted #c9bb96;
+    position:relative;
+  }
+  .evidence-list li::before{
+    content:"☐";
+    position:absolute;
+    left:0;
+    top:6px;
+    color:var(--stamp-red);
+  }
+
+  .signature-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:24px;
+    padding-top:14px;
+    border-top:1.5px dashed #a3946c;
+    font-size:10.5px;
+    color:#8a7d5e;
+  }
+  .sig{
+    font-family:'Special Elite', monospace;
+    font-size:16px;
+    color:var(--ink);
+  }
+
+  .retry-btn{
+    display:block;
+    margin:22px auto 0;
+    background:transparent;
+    border:1.5px solid var(--paper);
+    color:var(--paper);
+    font-family:'Oswald', sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:10px 22px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+  .retry-btn:hover{
+    background:var(--paper);
+    color:var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="eyebrow">Service Central des Enquêtes Absurdes</div>
+    <h1>Bureau National des Suspects</h1>
+    <p>Remplissez le formulaire ci-dessous avec la plus grande honnêteté.<br>
+    Notre algorithme totalement scientifique déterminera votre degré de culpabilité.</p>
+  </div>
+
+  <div class="folder" id="formCard">
+    <div class="folder-tab">DOSSIER EN COURS</div>
+    <div class="pin"></div>
+    <div class="folder-inner">
+      <div class="case-number">
+        <span id="caseNum">RÉF. N° ——————</span>
+        <span>CONFIDENTIEL</span>
+      </div>
+      <div class="form-title">Formulaire d'Identification</div>
+      <div class="form-sub">Il n'est pas obligatoire d'utiliser ces infos personnelles — inventez, exagérez, amusez-vous.</div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Prénom</label>
+          <input type="text" id="prenom" placeholder="Ex : Kevin">
+        </div>
+        <div class="field">
+          <label>Nom</label>
+          <input type="text" id="nom" placeholder="Ex : Dupont">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Âge</label>
+          <input type="number" id="age" placeholder="Ex : 27">
+        </div>
+        <div class="field">
+          <label>Sexe</label>
+          <select id="sexe">
+            <option value="">— Choisir —</option>
+            <option>Homme</option>
+            <option>Femme</option>
+            <option>Autre</option>
+            <option>Je refuse de coopérer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Taille <span class="hint">(cm)</span></label>
+          <input type="number" id="taille" placeholder="Ex : 172">
+        </div>
+        <div class="field">
+          <label>Pointure</label>
+          <input type="number" id="pointure" placeholder="Ex : 42">
+        </div>
+      </div>
+
+      <hr class="dashed">
+
+      <div class="row2">
+        <div class="field">
+          <label>Nom du chien <span class="hint">(ou chat, ou plante)</span></label>
+          <input type="text" id="chien" placeholder="Ex : Croquette">
+        </div>
+        <div class="field">
+          <label>Ville de résidence</label>
+          <input type="text" id="ville" placeholder="Ex : Lyon">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Plat préféré</label>
+          <input type="text" id="plat" placeholder="Ex : Raclette">
+        </div>
+        <div class="field">
+          <label>Signe astrologique</label>
+          <input type="text" id="astro" placeholder="Ex : Scorpion">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Dernière chose mangée <span class="hint">(soyez précis)</span></label>
+        <input type="text" id="mange" placeholder="Ex : un yaourt périmé">
+      </div>
+
+      <button class="submit-btn" id="submitBtn">Lancer l'enquête</button>
+      <div class="footer-note">Ce formulaire n'a aucune valeur légale, scientifique, ni morale. Il n'est pas obligatoire d'utiliser ces infos personnelles.</div>
+    </div>
+  </div>
+
+  <div class="verdict-wrap" id="verdictWrap">
+    <div class="verdict">
+      <div class="stamp" id="stampWord">SUSPECT</div>
+      <div class="case-number">
+        <span id="caseNumVerdict">RÉF. N° ——————</span>
+        <span id="dateStamp"></span>
+      </div>
+      <div class="verdict-title">Rapport d'enquête — conclusion officielle</div>
+      <div class="suspect-name" id="suspectName">—</div>
+
+      <div class="meter-row">
+        <div class="meter-pct" id="pctNumber">0%</div>
+        <div class="meter-label">de probabilité de culpabilité</div>
+      </div>
+      <div class="meter-bar-track"><div class="meter-bar-fill" id="meterFill"></div></div>
+
+      <div class="accusation-box">
+        <div class="label">Chef d'accusation retenu</div>
+        <div class="text" id="accusationText">—</div>
+      </div>
+
+      <div class="dossier-report" id="dossierReport"></div>
+
+      <div class="label" style="font-family:'Oswald',sans-serif; font-size:10.5px; letter-spacing:0.15em; text-transform:uppercase; color:var(--stamp-red-dark); margin-bottom:8px;">Éléments à charge</div>
+      <ul class="evidence-list" id="evidenceList"></ul>
+
+      <div class="signature-row">
+        <div>
+          Agent instructeur<br>
+          <span class="sig" id="agentName">—</span>
+        </div>
+        <div style="text-align:right;">
+          Fiabilité de l'enquête<br>
+          <span class="sig">0% (approx.)</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="retry-btn" id="retryBtn">Rouvrir une enquête</button>
+  </div>
+
+<script>
+(function(){
+
+  const ACCUSATIONS = [
+    "voleur de chaussettes en pleine nuit",
+    "mangeur du dernier gâteau sans jamais l'avouer",
+    "personne qui ne tire pas la chasse d'eau",
+    "coupable de rester sur le \"vu\" pendant 3 jours",
+    "responsable de la disparition des Tupperware",
+    "individu qui remet le lait vide dans le frigo",
+    "auteur du klaxon abusif au feu rouge",
+    "suspect de vol de Wi-Fi chez le voisin",
+    "personne qui pique les frites dans l'assiette d'autrui",
+    "coupable de doubler dans la file d'attente",
+    "individu qui laisse le caddie au milieu du parking",
+    "responsable du bruit de mastication insupportable",
+    "voleur de prises électriques en train",
+    "coupable de spoil de série sans prévenir",
+    "personne qui ne répond jamais aux messages",
+    "auteur de ronflements suspects et prolongés",
+    "individu qui met les pieds sur la table basse",
+    "coupable d'avoir mangé le fromage de quelqu'un d'autre au bureau",
+    "suspect de triche systématique au Monopoly",
+    "responsable de la disparition mystérieuse des chaussettes de la machine à laver",
+    "personne qui laisse sonner son réveil 45 minutes",
+    "coupable de parler fort au téléphone dans le train",
+    "individu qui pique dans le pot de Nutella à la cuillère",
+    "voleur de stylos de bureau en série",
+    "auteur du fameux \"je réponds dans 5 minutes\" qui dure 3 jours",
+    "coupable de ne jamais recharger la télécommande",
+    "personne qui met de la musique sans écouteurs dans le bus",
+    "suspect officiel de vol du chargeur de téléphone",
+    "individu qui ne remplace jamais le rouleau de papier toilette",
+    "coupable de manger la pizza en enlevant tout le fromage avant",
+    "responsable de la buée qui empêche de voir dans la salle de bain",
+    "auteur anonyme du post-it passif-agressif sur le frigo",
+    "voleur professionnel de couette la nuit",
+    "coupable de garer sa voiture sur deux places",
+    "personne qui dit \"on se capte\" et ne capte jamais",
+    "individu suspecté d'avoir mangé les biscuits de l'apéro avant l'heure",
+    "coupable de rire le plus fort à ses propres blagues",
+    "responsable du désordre mystérieux dans le tiroir à couverts",
+    "suspect de sabotage de la plante verte du salon",
+    "auteur du fameux vol de parapluie au bureau",
+    "personne qui laisse le clignotant allumé pendant 12 km",
+    "coupable d'avoir terminé le café sans en refaire",
+    "individu qui met un pull en laine pour un appel vidéo important",
+    "voleur avéré de la bonne place dans le canapé",
+    "responsable des miettes retrouvées dans le lit",
+    "coupable de siffler une chanson en boucle pendant des heures",
+    "suspect n°1 dans l'affaire du dentifrice écrasé au milieu",
+    "personne qui répond \"ça dépend\" à absolument tout",
+    "auteur du célèbre \"je pars dans 2 minutes\" (30 minutes plus tôt)",
+    "coupable de laisser le clignotant du frigo allumé toute la nuit",
+    "individu suspecté d'avoir changé la playlist sans demander",
+    "responsable de la disparition inexpliquée du dernier yaourt",
+    "voleur notoire de la bonne fourchette dans le tiroir",
+    "coupable d'avoir mis le chauffage à fond en été",
+    "personne qui prend systématiquement l'ascenseur pour un étage",
+    "suspect principal dans l'affaire du savon qui glisse toujours",
+    "individu qui laisse toujours la porte du placard ouverte",
+    "auteur mystérieux du gribouillage sur le mur",
+    "coupable d'avoir emprunté un livre et jamais rendu",
+    "responsable officiel du bazar sous le lit"
+  ];
+
+  const AGENTS = [
+    "Insp. R. Dubois", "Cdt. M. Lefèvre", "Agent J. Moreau", "Insp. C. Bernard",
+    "Cdt. S. Petit", "Agent T. Robert", "Insp. A. Girard", "Cdt. L. Fontaine",
+    "Agent P. Rousseau", "Insp. N. Blanchard"
+  ];
+
+  const EVIDENCE_TEMPLATES = [
+    n => `Le sujet a été aperçu dans un rayon de 50 mètres du lieu des faits, ${n ? n : "le suspect"} n'a pas d'alibi solide.`,
+    () => "Un témoin anonyme affirme avoir \"un mauvais pressentiment\" à propos du suspect.",
+    () => "L'analyse graphologique de sa signature révèle une écriture \"suspecte, mais stylée\".",
+    () => "Le suspect a changé de trottoir en apercevant l'enquêteur — comportement jugé alarmant.",
+    () => "Aucune preuve concrète n'a été trouvée, ce qui, statistiquement, est encore plus suspect.",
+    () => "Le suspect possède un sac à dos, élément couramment associé à la dissimulation d'objets.",
+    () => "Interrogé, le suspect a répondu \"je ne sais pas\" à une question qui n'avait pas encore été posée.",
+    () => "Le pouls du suspect s'est légèrement accéléré en lisant le mot \"enquête\".",
+    () => "Le suspect a un chien, or les chiens ne parlent pas — impossible de vérifier son alibi.",
+    () => "Des miettes suspectes ont été retrouvées à moins de 3 mètres du suspect.",
+    () => "Le suspect a ri nerveusement en lisant cette phrase, ce qui constitue un aveu implicite.",
+    () => "Son horoscope du jour mentionnait le mot \"tension\", coïncidence jugée improbable.",
+    () => "Le suspect porte des chaussures, ce qui laisse des empreintes, ce qui est en soi accablant.",
+    () => "Une odeur suspecte de culpabilité émane du dossier (probablement du café renversé)."
+  ];
+
+  const VERDICT_WORDS_BY_RANGE = [
+    { max: 20, word: "INNOCENT (PRESQUE)" },
+    { max: 45, word: "DOUTEUX" },
+    { max: 70, word: "SUSPECT" },
+    { max: 90, word: "TRÈS SUSPECT" },
+    { max: 100, word: "COUPABLE" }
+  ];
+
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
+  function pickMany(arr, count){
+    const copy = arr.slice();
+    const out = [];
+    for(let i = 0; i < count && copy.length; i++){
+      out.push(copy.splice(randInt(0, copy.length - 1), 1)[0]);
+    }
+    return out;
+  }
+  function generateCaseNumber(){
+    return "RÉF. N° " + randInt(10,99) + "-" + randInt(1000,9999) + "-" + pick(["A","B","C","D"]);
+  }
+  function todayStr(){
+    const d = new Date();
+    return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }
+
+  const caseNum1 = generateCaseNumber();
+  document.getElementById('caseNum').textContent = caseNum1;
+
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    const prenom = document.getElementById('prenom').value.trim() || "Anonyme";
+    const nom = document.getElementById('nom').value.trim() || "Sans-Nom";
+    const age = document.getElementById('age').value.trim() || "un âge indéterminé";
+    const sexe = document.getElementById('sexe').value || "genre non déclaré";
+    const taille = document.getElementById('taille').value.trim();
+    const pointure = document.getElementById('pointure').value.trim();
+    const chien = document.getElementById('chien').value.trim();
+    const ville = document.getElementById('ville').value.trim();
+    const plat = document.getElementById('plat').value.trim();
+    const astro = document.getElementById('astro').value.trim();
+    const mange = document.getElementById('mange').value.trim();
+
+    const pct = randInt(1, 100);
+    const accusation = pick(ACCUSATIONS);
+    const agent = pick(AGENTS);
+    const caseNum = generateCaseNumber();
+
+    let verdictWord = "SUSPECT";
+    for(const r of VERDICT_WORDS_BY_RANGE){
+      if(pct <= r.max){ verdictWord = r.word; break; }
+    }
+
+    document.getElementById('caseNumVerdict').textContent = caseNum;
+    document.getElementById('dateStamp').textContent = todayStr();
+    document.getElementById('suspectName').textContent = prenom + " " + nom;
+    document.getElementById('stampWord').textContent = verdictWord;
+    document.getElementById('pctNumber').textContent = pct + "%";
+    document.getElementById('accusationText').textContent = accusation.charAt(0).toUpperCase() + accusation.slice(1);
+    document.getElementById('agentName').textContent = agent;
+
+    const meterFill = document.getElementById('meterFill');
+    meterFill.style.width = "0%";
+    requestAnimationFrame(() => {
+      setTimeout(() => { meterFill.style.width = pct + "%"; }, 50);
+    });
+
+    let report = `<b>${prenom} ${nom}</b>, ${age} ans, ${sexe.toLowerCase()}`;
+    if(taille) report += `, mesurant ${taille} cm`;
+    if(pointure) report += ` et chaussant du ${pointure}`;
+    report += `, `;
+    if(ville) report += `résidant à <b>${ville}</b>, `;
+    report += `est officiellement suspecté(e) d'être <b>${accusation}</b>. `;
+    if(chien) report += `Son animal, nommé <b>${chien}</b>, a refusé de témoigner. `;
+    if(plat) report += `Le fait qu'il/elle apprécie particulièrement <b>${plat}</b> n'a pas aidé sa cause. `;
+    if(mange) report += `La dernière chose consommée par le sujet — <b>${mange}</b> — est jugée hautement pertinente pour l'enquête. `;
+    if(astro) report += `Son signe astrologique (<b>${astro}</b>) a également été pris en compte, sans aucune base scientifique.`;
+
+    document.getElementById('dossierReport').innerHTML = report;
+
+    const evList = document.getElementById('evidenceList');
+    evList.innerHTML = "";
+    const chosenTemplates = pickMany(EVIDENCE_TEMPLATES, 4);
+    chosenTemplates.forEach(fn => {
+      const li = document.createElement('li');
+      li.textContent = fn(prenom);
+      evList.appendChild(li);
+    });
+
+    document.getElementById('verdictWrap').classList.add('show');
+    document.getElementById('verdictWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('retryBtn').addEventListener('click', function(){
+    document.getElementById('verdictWrap').classList.remove('show');
+    document.getElementById('caseNum').textContent = generateCaseNumber();
+    document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+})();
+</script>
+
+</body>
+</html>
